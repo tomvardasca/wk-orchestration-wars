@@ -1,0 +1,33 @@
+version: '3.2'
+
+services:
+  wk-hello-world-nodejs:
+    image: tomvardasca/wk-hello-world-nodejs:v1
+    ports:
+      - "32000:8000"
+    build: .
+    deploy:
+      mode: replicated
+      replicas: 2
+      resources:
+        # Hard limit - Docker does not allow to allocate more
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        # Soft limit - Docker makes best effort to return to it
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+      # service restart policy
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 120s
+        # service update configuration
+      update_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: rollback
+        monitor: 60s
+        max_failure_ratio: 0.3

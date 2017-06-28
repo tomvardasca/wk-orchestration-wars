@@ -1,0 +1,32 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: wk-hello-world-nodejs
+  labels:
+    app: wk-hello-world-nodejs
+spec:
+  replicas: 2
+  minReadySeconds: 5
+  strategy:
+    # indicate which strategy we want for rolling update
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: wk-hello-world-nodejs
+    spec:
+      containers:
+      - name: hello-world-nodejs
+        image: tomvardasca/wk-hello-world-nodejs:v1
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
+        ports:
+        - containerPort: 8000
